@@ -9,7 +9,7 @@
 #define READFILE "RBTree_input.txt"
 #define DRAWFILE "RBTree_drawing.svg"
 
-#define MAX_KEY 1000000000
+#define MAX_KEY 10000
 #define MAX_NODE 100000000
 
 // a function to copy a random number into a variable
@@ -34,23 +34,24 @@ double complexityRBTree(int n, double time) {
 }
 
 void populateTree(RBTree tree, int *tab, int n) {
-	for (int i = 0; i < n; i++) {
-		RBTree_insert(tree, tab[i]);
-		//printf("inserted %d\n", tab[i]);
-	}	
+	
 }
 
 void populateTabWithRandomNumber(int *tab, int n, int max_key) {
 	for (int i = 0; i < n; i++) {
 		// Scale the random number to the desired range (0 to 1000)
 		int x;
-		randInt(0, max_key, &x);
+		randInt(-max_key, max_key, &x);
 		tab[i] = rand() % max_key;
 	}
 }
 
-void testInsertion(RBTree tree, int *tab, int n, int max_key, int number_of_run) {
+void testRBTree(RBTree tree, int *tab, int n, int max_key, int number_of_run) {
 	double total_time = 0;
+
+	double total_time_search = 0;
+	double total_time_delete = 0;
+	double total_time_insert = 0;
 
 	for(int i = 0; i < number_of_run; i++) {
 		if (tree != NULL) {
@@ -59,23 +60,61 @@ void testInsertion(RBTree tree, int *tab, int n, int max_key, int number_of_run)
 		RBTree_destroy();
 		tree = RBTree_create();
 
-		clock_t debut = clock();
-		populateTree(tree, tab, n);
-		clock_t fin = clock();
+		// Mesure du temps d'exécution de l'algorithme d'insertion
+		clock_t start_insert = clock();
+		for (int i = 0; i < n; i++) {
+			RBTree_insert(tree, tab[i]);
+		}	
+		clock_t end_insert = clock();
 
-		double temps = (double)(fin - debut) / CLOCKS_PER_SEC;
-		temps *= 1000;
-		total_time += temps;
+		// Mesure du temps d'exécution de l'algorithme de recherche
+		clock_t start_search = clock();
+		for (int i = 0; i < n; i++) {
+			RBTree_search(tree, tab[i]);
+		}
+		clock_t end_search = clock();
 
-		//printf("temps [%d]: %f ms (%d nodes, 0 - %d max key)\n", i, temps, n, max_key);
+		// Mesure du temps d'exécution de l'algorithme de suppression
+		clock_t start_delete = clock();
+		for (int i = 0; i < n; i++) {
+			RBTree_delete(tree, tab[i]);
+		}
+		clock_t end_delete = clock();
 
-		//printf("temps [%d]: %f ms\n", i, temps);
-		char filename[200];
-		sprintf(filename, "results/RBTree_drawing_%d.svg", i + n);
-		//RBTree_draw(tree, filename);
-		//printf("finished %d\n", i + n);q
+
+		double temps_insert = (double)(end_insert - start_insert) / CLOCKS_PER_SEC;
+		temps_insert *= 1000;
+
+		double temps_search = (double)(end_search - start_search) / CLOCKS_PER_SEC;
+		temps_search *= 1000;
+
+		double temps_delete = (double)(end_delete - start_delete) / CLOCKS_PER_SEC;
+		temps_delete *= 1000;
+
+		total_time_insert += temps_insert;
+		total_time_search += temps_search;
+		total_time_delete += temps_delete;
+
+		total_time += temps_insert + temps_search + temps_delete;
 	}
 
+	double average_time_insert = total_time_insert / number_of_run;
+	double average_time_search = total_time_search / number_of_run;
+	double average_time_delete = total_time_delete / number_of_run;
+
+	double average_time = total_time / number_of_run;
+
+	// I want to print the result in a CSV file
+
+
+	FILE *f = fopen("../data/data_100k_10M_6.csv", "a");
+	if (f == NULL) {
+		printf("Error opening file!\n");
+		exit(1);
+	}
+	fprintf(f, "%d;%d;%d;%f;%f;%f;%f;%f;%f;%f;%f;%f\n", n, max_key, number_of_run, total_time, average_time, average_time_insert, average_time_search, average_time_delete, total_time_insert, total_time_search, total_time_delete, log10f(n));
+	fclose(f);
+	/*
 	printf("total time: %f ms\n", total_time);
 	printf("number of run: %d\n", number_of_run);
 	printf("number of node: %d\n", n);
@@ -98,56 +137,11 @@ void testInsertion(RBTree tree, int *tab, int n, int max_key, int number_of_run)
 	printf("\tavg_time / (n * log2(n)): %f ms\n", complexityRBTree(n, average_time));
 
 	// complexite theorique
-	printf("\n\n\n");
-}
-
-void testSearch(RBTree tree, int *tab, int n, int max_key, int number_of_run) {
-	double total_time = 0;
-	if (tree != NULL) {
-		RBTree_free(tree);
-	}
-	RBTree_destroy();
-	tree = RBTree_create();
-
-	populateTree(tree, tab, n);
-
-	for(int i = 0; i < number_of_run; i++) {
-		clock_t debut = clock();
-		RBTree_search(tree, x);
-		clock_t fin = clock();
-
-		double temps = (double)(fin - debut) / CLOCKS_PER_SEC;
-		temps *= 1000;
-		total_time += temps;
-
-		//printf("temps [%d]: %f ms (%d nodes, 0 - %d max key)\n", i, temps, n, max_key);
-
-		//printf("temps [%d]: %f ms\n", i, temps);
-		char filename[200];
-		sprintf(filename, "results/RBTree_drawing_%d.svg", i + n);
-		//RBTree_draw(tree, filename);
-		//printf("finished %d\n", i + n);q
-	}
-
-	printf("total time: %f ms\n", total_time);
-	printf("number of run: %d\n", number_of_run);
-	printf("number of node: %d\n", n);
-	printf("max key: %d\n", max_key);
-	double average_time = total_time / number_of_run;
-	printf("average time: %f ms\n", average_time);
-
-	double c = 100000.0;
-	printf("log(n) c: %f\n", log10(n));
-	printf("\ttime / (log(n)): %f ms\n", total_time / log10(n));
-	printf("\tavg_time / (log(n)): %f ms\n", average_time / log10(n));
-
-	printf("n log(n): %f\n", n * log10(n));
-	printf("\ttime / (n * log(n)): %f ms\n", total_time / (n * log10(n)));
-	printf("\tavg_time / (n * log(n)): %f ms\n", average_time / (n * log10(n)));
+	printf("\n\n\n");*/
 }
 
 int main(int argc, char *argv[]) {
-	printf("Test of the red-black tree\n");
+	//printf("Test of the red-black tree\n");
   srand(time(NULL));
 	
 	RBTree tree = NULL,
@@ -169,7 +163,7 @@ int main(int argc, char *argv[]) {
 	//printf("max key : %d\n", max_key);
 
 	//long int number_of_run = strtol(argv[3], &endptr3, 10);
-	int number_of_run = 100;
+	int number_of_run = 10;
 	//printf("number of run : %d\n", number_of_run);
 
 	int *tab = malloc(sizeof(int) * MAX_NODE);
@@ -177,22 +171,32 @@ int main(int argc, char *argv[]) {
 	for (int i = 0; i < MAX_NODE; i++) {
 		tab[i] = rand() % MAX_KEY;
 	}
-	printf("tab created\n");
+	//printf("tab created\n");
 
-	//testInsertion(tree, tab, 10, MAX_KEY, 100);
-	//testInsertion(tree, tab, 100, 100000000, 100);
-	//testInsertion(tree, tab, 1000, 100000000, 100);
-	//testInsertion(tree, tab, 10000, 100000000, 100);
-	//testInsertion(tree, tab, 100000, 100000000, 100);
-	testInsertion(tree, tab, 1000000, 100000000, 100);
-	testInsertion(tree, tab, 10000000, 100000000, 100);
-	//testInsertion(tree, tab, 100000000, 100000000, 100);
-
-	/* We need to free the tree. */
-	if (tree != NULL) {
-		RBTree_free(tree);
+	FILE *f = fopen("../data/data_100k_10M_6.csv", "w");
+	if (f == NULL) {
+		printf("Error opening file!\n");
+		exit(1);
 	}
-	RBTree_destroy();
+	fprintf(f, "n;max_key;number_of_run;total_time;average_time;average_time_insert;average_time_search;average_time_delete;total_time_insert;total_time_search;total_time_delete;Ologn\n");
+	fclose(f);
+
+	//testRBTree(tree, tab, 10, MAX_KEY, number_of_run);
+	//testRBTree(tree, tab, 100, MAX_KEY, number_of_run);
+	//testRBTree(tree, tab, 1000, MAX_KEY, number_of_run);
+	//testRBTree(tree, tab, 10000, MAX_KEY, number_of_run);
+
+	int start = 0;
+	int step = 10000;
+	for (int i = 0; i < 100; i++) {
+		start += step;
+		testRBTree(tree, tab, start, MAX_KEY, number_of_run);
+	}
+
+	//testInsertion(tree, tab, 100000, 100000000, 100);
+	//testRBTree(tree, tab, 1000000, 100000000, 100);
+	//testRBTree(tree, tab, 10000000, 100000000, 100);
+	//testInsertion(tree, tab, 100000000, 100000000, 100);
 
 	return 0;
 }

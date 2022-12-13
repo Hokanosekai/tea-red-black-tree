@@ -11,13 +11,13 @@
 RBTree RBTree_create() {
 	RBTree ret; // arbre à retourner
 	if ((ret = malloc(sizeof(*ret))) == NULL) {
-		fprintf(stderr, "Error: out of memory.\n");
+		//fprintf(stderr, "Error: out of memory.\n");
 		return NULL;
 	}
 	/* On ne peut pas utilisé RBNode_new_node() car il veut mettre certaines valeurs
 	 * à tree->nil */
 	if ((ret->nil = malloc(sizeof(*ret->nil))) == NULL) {
-		fprintf(stderr, "Error: out of memory.\n");
+		//fprintf(stderr, "Error: out of memory.\n");
 		// Allocation de ret a réussi; on doit le libérer
 		free(ret);
 		return NULL;
@@ -51,7 +51,7 @@ static RBNode RBNode_new_node(RBTree tree, int data) {
 		RBNode_mem_pool = ret->parent;
 	} else {
 		if ((ret = malloc(sizeof(*ret))) == NULL) {
-			fprintf(stderr, "Error: out of memory.\n");
+			//fprintf(stderr, "Error: out of memory.\n");
 			return NULL;
 		}
 	}
@@ -282,7 +282,7 @@ RBTree RBTree_read(char *fname) {
 	RBNode root;
 	FILE *infp = fopen(fname, "r");
 	if (infp == NULL) {
-		fprintf(stderr, "Error: couldn't read file %s.\n", fname);
+		//fprintf(stderr, "Error: couldn't read file %s.\n", fname);
 		return NULL;
 	}
 	// On crée l'arbre à retourner
@@ -356,14 +356,14 @@ static void RBNode_post_order(RBTree tree, RBNode n) {
  * Section 6: Recherche
  *****************************************************************************/
 /* Recherche un élément avec une clé particulière. */
-void RBTree_search(RBTree tree, int key, void *node) {
+int RBTree_search(RBTree tree, int key) {
 	RBNode n = RBNode_get_node_by_key(tree, key);
 	if (n == tree->nil) {
-		fprintf(stderr, "Error: node %i does not exist.\n", key);
-		return;
+		//fprintf(stderr, "Error: node %i does not exist.\n", key);
+		return 0;
 	}
 	// Copie le noeud trouvé dans node
-	memcpy(node, &n, sizeof(n));
+	return 1;
 }
 /* Retourne un noeud avec la clé donnée. */
 static RBNode RBNode_get_node_by_key(RBTree haystack, int needle) {

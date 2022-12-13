@@ -44,9 +44,9 @@ int RBTree_delete(RBTree tree, int key);
  * @brief Recherche une clé dans l'arbre rouge-noir donné
  * @param tree L'arbre rouge-noir dans lequel rechercher la clé
  * @param key La clé à rechercher
- * @param node Un pointeur vers un noeud de l'arbre rouge-noir
+ * @return 0 si la clé n'a pas été trouvée, 1 sinon
 */
-void RBTree_search(RBTree tree, int key, void *node);
+int RBTree_search(RBTree tree, int key);
 
 /**
  * @brief Lit un arbre rouge-noir depuis un fichier
