@@ -166,10 +166,11 @@ int main(int argc, char *argv[]) {
 	int number_of_run = 10;
 	//printf("number of run : %d\n", number_of_run);
 
-	int *tab = malloc(sizeof(int) * MAX_NODE);
+	char *tab = malloc(sizeof(4) * MAX_NODE);
+	char alphabet[] = "abcdefghijklmnopqrstuvwxyz";
 	//printf("tab created\n");
 	for (int i = 0; i < MAX_NODE; i++) {
-		tab[i] = rand() % MAX_KEY;
+		tab[i] = alphabet[rand() % 26];
 	}
 	//printf("tab created\n");
 
