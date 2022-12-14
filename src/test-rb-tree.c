@@ -6,9 +6,6 @@
 #include <string.h>
 #include <math.h>
 
-#define READFILE "RBTree_input.txt"
-#define DRAWFILE "RBTree_drawing.svg"
-
 #define MAX_KEY 10000
 #define MAX_NODE 1000000
 
@@ -46,7 +43,7 @@ void populateTabWithRandomNumber(int *tab, int n, int max_key) {
 	}
 }
 
-void testRBTree(RBTree tree, int *tab, int n, int max_key, int number_of_run) {
+void testRBTree(RBTree tree, char *tab, int n, int max_key, int number_of_run) {
 	double total_time = 0;
 
 	double total_time_search = 0;
@@ -63,21 +60,27 @@ void testRBTree(RBTree tree, int *tab, int n, int max_key, int number_of_run) {
 		// Mesure du temps d'exécution de l'algorithme d'insertion
 		clock_t start_insert = clock();
 		for (int i = 0; i < n; i++) {
-			RBTree_insert(tree, tab[i]);
+			char *str = malloc(sizeof(char) * 2);
+			str[0] = tab[i];
+			RBTree_insert(tree, str);
 		}	
 		clock_t end_insert = clock();
 
 		// Mesure du temps d'exécution de l'algorithme de recherche
 		clock_t start_search = clock();
 		for (int i = 0; i < n; i++) {
-			RBTree_search(tree, tab[i]);
+			char *str = malloc(sizeof(char) * 2);
+			str[0] = tab[i];
+			RBTree_search(tree, str);
 		}
 		clock_t end_search = clock();
 
 		// Mesure du temps d'exécution de l'algorithme de suppression
 		clock_t start_delete = clock();
 		for (int i = 0; i < n; i++) {
-			RBTree_delete(tree, tab[i]);
+			char *str = malloc(sizeof(char) * 2);
+			str[0] = tab[i];
+			RBTree_delete(tree, str);
 		}
 		clock_t end_delete = clock();
 
@@ -107,7 +110,7 @@ void testRBTree(RBTree tree, int *tab, int n, int max_key, int number_of_run) {
 	// I want to print the result in a CSV file
 
 
-	FILE *f = fopen("../data/data_100k_1M_char.csv", "a");
+	FILE *f = fopen("../data/data_10k_1M_char.csv", "a");
 	if (f == NULL) {
 		printf("Error opening file!\n");
 		exit(1);
@@ -166,15 +169,15 @@ int main(int argc, char *argv[]) {
 	int number_of_run = 10;
 	//printf("number of run : %d\n", number_of_run);
 
-	int *tab = malloc(sizeof(int) * MAX_NODE);
+	char *tab = malloc(sizeof(char) * MAX_NODE);
 	//printf("tab created\n");
 	for (int i = 0; i < MAX_NODE; i++) {
-		tab[i] = rand() % MAX_KEY;
+		tab[i] = 'a' + rand() % 26;
 	}
 	printf("tab filled\n");
 	//printf("tab created\n");
 
-	FILE *f = fopen("../data/data_100k_1M_char.csv", "w");
+	FILE *f = fopen("../data/data_10k_1M_char.csv", "w");
 	if (f == NULL) {
 		printf("Error opening file!\n");
 		exit(1);
