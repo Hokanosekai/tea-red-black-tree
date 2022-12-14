@@ -10,7 +10,7 @@
 #define DRAWFILE "RBTree_drawing.svg"
 
 #define MAX_KEY 10000
-#define MAX_NODE 100000000
+#define MAX_NODE 1000000
 
 // a function to copy a random number into a variable
 void randInt(int min, int max, int *x) {
@@ -107,7 +107,7 @@ void testRBTree(RBTree tree, int *tab, int n, int max_key, int number_of_run) {
 	// I want to print the result in a CSV file
 
 
-	FILE *f = fopen("../data/data_100k_10M_6.csv", "a");
+	FILE *f = fopen("../data/data_100k_1M_char.csv", "a");
 	if (f == NULL) {
 		printf("Error opening file!\n");
 		exit(1);
@@ -166,15 +166,15 @@ int main(int argc, char *argv[]) {
 	int number_of_run = 10;
 	//printf("number of run : %d\n", number_of_run);
 
-	char *tab = malloc(sizeof(4) * MAX_NODE);
-	char alphabet[] = "abcdefghijklmnopqrstuvwxyz";
+	int *tab = malloc(sizeof(int) * MAX_NODE);
 	//printf("tab created\n");
 	for (int i = 0; i < MAX_NODE; i++) {
-		tab[i] = alphabet[rand() % 26];
+		tab[i] = rand() % MAX_KEY;
 	}
+	printf("tab filled\n");
 	//printf("tab created\n");
 
-	FILE *f = fopen("../data/data_100k_10M_6.csv", "w");
+	FILE *f = fopen("../data/data_100k_1M_char.csv", "w");
 	if (f == NULL) {
 		printf("Error opening file!\n");
 		exit(1);
@@ -186,13 +186,16 @@ int main(int argc, char *argv[]) {
 	//testRBTree(tree, tab, 100, MAX_KEY, number_of_run);
 	//testRBTree(tree, tab, 1000, MAX_KEY, number_of_run);
 	//testRBTree(tree, tab, 10000, MAX_KEY, number_of_run);
-
 	int start = 0;
 	int step = 10000;
 	for (int i = 0; i < 100; i++) {
 		start += step;
+		printf("[WORKING] testing RBT for %d nodes\n", start);
 		testRBTree(tree, tab, start, MAX_KEY, number_of_run);
+		printf("[DONE] testing RBT for %d nodes\n", start);
 	}
+
+	printf("[END] tests\n");
 
 	//testInsertion(tree, tab, 100000, 100000000, 100);
 	//testRBTree(tree, tab, 1000000, 100000000, 100);

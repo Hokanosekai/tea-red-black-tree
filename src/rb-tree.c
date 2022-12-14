@@ -43,7 +43,7 @@ static void RBNode_free_subtree(RBTree tree, RBNode node) {
 	RBNode_free_node(node);
 }
 /* Création d'un noeud rouge. */
-static RBNode RBNode_new_node(RBTree tree, void *data) {
+static RBNode RBNode_new_node(RBTree tree, int data) {
 	RBNode ret;
 	// On prend les noeuds du pool de mémoire si on peut; sinon on alloue
 	if (RBNode_mem_pool != NULL) {
@@ -80,7 +80,7 @@ void RBTree_destroy() {
  * Section 2: Insertion
  *****************************************************************************/
 /* Insert un nouveau noeud dans l'arbre. */
-int RBTree_insert(RBTree tree, void *key) {
+int RBTree_insert(RBTree tree, int key) {
 	// Le noeud que nous allons créer
 	RBNode newnode;
 	// Le parent du noeud que nous allons créer
@@ -90,9 +90,9 @@ int RBTree_insert(RBTree tree, void *key) {
 	// On cherche la position où insérer le noeud
 	while (pos != tree->nil) {
 		newparent = pos;
-		if (strcmp(key, newparent->key) < 0) {
+		if (key < newparent->key) {
 			pos = pos->left;
-		} else if (strcmp(key, newparent->key) > 0) {
+		} else if (key > newparent->key) {
 			pos = pos->right;
 		} else {
 			// On ne supporte pas deux noeuds avec la même valeur
@@ -111,7 +111,7 @@ int RBTree_insert(RBTree tree, void *key) {
 	newnode->parent = newparent;
 	if (newparent == tree->nil) {
 		tree->root = newnode;
-	} else if (strcmp(key, newparent->key) < 0) {
+	} else if (key < newparent->key) {
 		newparent->left = newnode;
 	} else {
 		newparent->right = newnode;
@@ -165,7 +165,7 @@ static RBNode RBNode_get_uncle(RBTree tree, RBNode n) {
  * Section 3: Suppression
  *****************************************************************************/
 /* Supprime un noeud de l'arbre. */
-int RBTree_delete(RBTree tree, void *key) {
+int RBTree_delete(RBTree tree, int key) {
 	// Le noeud que nous allons supprimer
 	RBNode dead = RBNode_get_node_by_key(tree, key);
 	// Le noeud où nous allons réparer la structure de l'arbre
@@ -272,62 +272,6 @@ static void RBNode_delete_fix(RBTree tree, RBNode n) {
 }
 
 /******************************************************************************
- * Section 4: I/O
- *****************************************************************************/
-/* Lit un arbre dans le format préfixe depuis RBREADFILE. */
-/* Cette fonction implémente un algorithme qui est O(n) dans le nombre de
- * noeuds, plus efficace que l'algorithme trivial O(n*log(n)). */
-RBTree RBTree_read(char *fname) {
-	RBTree ret;
-	RBNode root;
-	FILE *infp = fopen(fname, "r");
-	if (infp == NULL) {
-		//fprintf(stderr, "Error: couldn't read file %s.\n", fname);
-		return NULL;
-	}
-	// On crée l'arbre à retourner
-	ret = RBTree_create();
-	if (ret != NULL) {
-		root = RBNode_read_node(ret, infp);
-		// On lit les noeuds de -inf à INT_MAX
-		ret->root = RBNode_read_subtree(ret, &root, INT_MAX, infp);
-	}
-	fclose(infp);
-	return ret;
-}
-/* Lit un arbre dans le format préfixe, limité par la valeur maximale max. */
-static RBNode RBNode_read_subtree(RBTree tree, RBNode *next, int max, FILE *fp) {
-	RBNode ret = *next;
-	// Si l'arbre n'est pas complet ou que nous ne devrions pas être ici
-	if (ret == NULL || ret->key > max) {
-		return tree->nil;
-	}
-	*next = RBNode_read_node(tree, fp);
-	// Noeuds jusqu'à ma propre valeur appartiennent à mon sous-arbre gauche
-	ret->left = RBNode_read_subtree(tree, next, ret->key - 1, fp);
-	ret->left->parent = ret;
-	// Noeuds jusqu'à la valeur maximale appartiennent à mon sous-arbre droit
-	ret->right = RBNode_read_subtree(tree, next, max, fp);
-	ret->right->parent = ret;
-	return ret;
-}
-/* Lit un noeud depuis le fichier fp. */
-static RBNode RBNode_read_node(RBTree tree, FILE *fp) {
-	RBNode n; // Le noeud à retourner
-	char col;  // La couleur du noeud
-	int data;  // La valeur du noeud
-	// On saute le point-virgule optionnel
-	fscanf(fp, " ; ");
-	// Si le noeud est invalide (ou nous avons atteint la fin du fichier)
-	if (fscanf(fp, " %c, %d ", &col, &data) != 2 || (col != BLACK && col != RED)) {
-		return NULL;
-	}
-	n = RBNode_new_node(tree, data);
-	if (n != NULL) n->color = col;
-	return n;
-}
-
-/******************************************************************************
  * Section 5: Fonctions de tri
  *****************************************************************************/
 /* Trie les éléments de l'arbre en utilisant l'algorithme de tri par pre-processing. */
@@ -356,7 +300,7 @@ static void RBNode_post_order(RBTree tree, RBNode n) {
  * Section 6: Recherche
  *****************************************************************************/
 /* Recherche un élément avec une clé particulière. */
-int RBTree_search(RBTree tree, void *key) {
+int RBTree_search(RBTree tree, int key) {
 	RBNode n = RBNode_get_node_by_key(tree, key);
 	if (n == tree->nil) {
 		//fprintf(stderr, "Error: node %i does not exist.\n", key);
@@ -366,12 +310,12 @@ int RBTree_search(RBTree tree, void *key) {
 	return 1;
 }
 /* Retourne un noeud avec la clé donnée. */
-static RBNode RBNode_get_node_by_key(RBTree haystack, void *needle) {
+static RBNode RBNode_get_node_by_key(RBTree haystack, int needle) {
 	RBNode pos = haystack->root; /* our current position */
 	while (pos != haystack->nil) {
-		if (strcmp(pos->key, needle) == 0) {
+		if (pos->key < needle) {
 			return pos;
-		} else if (strcmp(pos->key, needle) > 0) {
+		} else if (pos->key > needle) {
 			pos = pos->left;
 		} else {
 			pos = pos->right;
