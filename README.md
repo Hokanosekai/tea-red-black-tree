@@ -20,6 +20,8 @@
 - [ ] comparer les courbes de temps d'execution
 - [ ] compte rendu
 
+> On a des test dans le dossier `data\rbtree` pour des data de type `char` mais en gros pour chaque palier de 1k noeuds on a fait que 1 itération donc on a pas de moyenne, breff à voir si on les refait avec au moins 10 itérations.
+
 > On va mesurer la temps d'éxécution sur un arbre de 10k noeuds à 1M noeuds et cela sur 10 itérations, on va faire la moyenne des temps d'éxécution pour chaque itération. Faudrait le faire pour de data de type `char` et `int`.
 
 > Dans le fichier `test-rb-tree.c` on rempli un tableau d'entiers aléatoires entre 0 et 100k. On peut faire pareil pour des `char` en remplissant un tableau de `char` aléatoires.
