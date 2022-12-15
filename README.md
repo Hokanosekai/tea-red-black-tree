@@ -6,24 +6,27 @@
   - [ ] insertion
   - [ ] suppression
   - [ ] recherche
-  - [ ] insertion `char`
-  - [ ] suppression `char`
-  - [ ] recherche `char`
+  - [ ] (insertion `char`)
+  - [ ] (suppression `char`)
+  - [ ] (recherche `char`)
 - [x] mesurer le temps d'execution RED BLACK TREE :
   - [x] insertion
   - [x] suppression
   - [x] recherche
-  - [ ] insertion `char`
-  - [ ] suppression `char`
-  - [ ] recherche `char`
+  - [ ] (insertion `char`)
+  - [ ] (suppression `char`)
+  - [ ] (recherche `char`)
 - [ ] tracer les courbes de temps d'execution
 - [ ] comparer les courbes de temps d'execution
+- [ ] compte rendu
 
 > On va mesurer la temps d'éxécution sur un arbre de 10k noeuds à 1M noeuds et cela sur 10 itérations, on va faire la moyenne des temps d'éxécution pour chaque itération. Faudrait le faire pour de data de type `char` et `int`.
 
 > Dans le fichier `test-rb-tree.c` on rempli un tableau d'entiers aléatoires entre 0 et 100k. On peut faire pareil pour des `char` en remplissant un tableau de `char` aléatoires.
 
 > Pour les test pour l'arbre AVL, on peut juste réutiliser le code des test pour l'arbre rouge noir.
+
+> Si on a le temps on fait les tests pour les data de type `char`.
 
 ## Description
 
