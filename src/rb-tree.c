@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <limits.h>
 #include <string.h>
+#include <errno.h>
 
 /******************************************************************************
  * Section 1: Creation et Destruction
@@ -182,8 +183,8 @@ int RBTree_delete(RBTree tree, int  key) {
 	RBColor orig_col = dead->color;
 	// Le noeud n'existe pas, on ne peut donc pas le supprimer
 	if (dead == tree->nil) {
-		// /!\ Note: On désactive cette partie pour ne pas voir les messages /!\
-		fprintf(stderr, "Error: node %i does not exist.\n", key);
+		// /!\ Note: On désactive cette partie pour ne pas voir les messages /!
+		//fprintf(stderr, "Error: node %i does not exist.\n", key);
 		return 0;
 	}
 	// Ici nous supprimons le noeud comme dans un arbre binaire
@@ -245,7 +246,7 @@ static void RBNode_delete_fix(RBTree tree, RBNode n) {
 			sibling->color = BLACK;
 			sibling->parent->color = RED;
 			RBNode_rotate(tree, sibling->parent, is_left);
-			sibling = (is_left) ? n->parent->right : n->parent->right;
+			sibling = (is_left) ? n->parent->right : n->parent->left;
 		}
 		// Cas 2: le frère est noir et ses enfants sont noirs
 		if (sibling->left->color == BLACK && sibling->right->color == BLACK) {
