@@ -46,18 +46,36 @@ Start by downloading the source code and compiling it:
 git clone
 cd tea-red-black-tree
 ```
+
 Then, create a new folder along the `src` folder and compile the source code:
 
 ```bash
-$ mkdir debug
-$ cd debug
-$ cmake ../src/ -DCMAKE_INSTALL_PREFIX=../tmp -DCMAKE_BUILD_TYPE=Debug
-$ make install
+mkdir debug
+cd debug
+cmake ../src/ -DCMAKE_INSTALL_PREFIX=../tmp -DCMAKE_BUILD_TYPE=Debug
+make install
 ```
+
 You can now run the tests:
 
 ```bash
-$ ./test-rb-tree
+./test-rb-tree number_of_nodes number_of_iterations <data_input_file>
+```
+
+> Note the results are saved in the file called `data_output.csv` in the `data` folder.
+
+You can also test your own data by passing a file as the last argument. The file must contain one line with the data separated by a `,`. If you don't pass a file, the program will generate random data.
+
+If you want you can generate input data for the tests:
+
+```bash
+./test-rb-tree number_of_nodes --create-random
+```
+
+or
+
+```bash
+./test-rb-tree number_of_nodes --create-sorted
 ```
 
 ## License

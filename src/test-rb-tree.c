@@ -155,13 +155,13 @@ int main(int argc, char *argv[]) {
 		number_of_node = strtol(argv[1], &endptr1, 10);
 		tab = malloc(sizeof(int) * number_of_node);
 
-		if (strcmp(argv[2], "-create_random") == 0) {
+		if (strcmp(argv[2], "--create-random") == 0) {
 			char filename[100];
 			sprintf(filename, "data_%d_%d_random.txt", number_of_node, RANDOM_MAX);
 			createFileWithRandomNumbers(number_of_node, filename);
 			printf("File %s created\n", filename);
 			exit(0);
-		} else if (strcmp(argv[2], "-create_sorted") == 0) {
+		} else if (strcmp(argv[2], "--create-sorted") == 0) {
 			char filename[100];
 			sprintf(filename, "data_%d_%d_sorted.txt", number_of_node, RANDOM_MAX);
 			createFileWithSortedNumbers(number_of_node, filename);
@@ -169,8 +169,6 @@ int main(int argc, char *argv[]) {
 			exit(0);
 		} else {
 			iterations = strtol(argv[2], &endptr2, 10);
-
-			printf("Number of iterations : %d\n", iterations);
 
 			if (argc == 4) {
 				readDataFromFile(argv[3], tab, number_of_node);
@@ -199,7 +197,7 @@ int main(int argc, char *argv[]) {
 			printf("[DONE] testing RBT for %d nodes\n", number_of_node);
 		}
 	} else {
-		fprintf(stderr, "Usage: %s number_of_node iterations <data_input_file>\n", argv[0]);
+		fprintf(stderr, "Usage: %s number_of_node iterations <data_input_file>", argv[0]);
 		exit(1);
 	}
 
