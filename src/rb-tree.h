@@ -30,7 +30,7 @@ void RBTree_destroy();
  * @param key La clé à insérer
  * @return 0 si l'insertion a réussi, -1 sinon
  */
-int RBTree_insert(RBTree tree, void * key);
+int RBTree_insert(RBTree tree,int key);
 
 /**
  * @brief Supprime une clé de l'arbre rouge-noir donné
@@ -38,7 +38,7 @@ int RBTree_insert(RBTree tree, void * key);
  * @param key La clé à supprimer
  * @return 0 si la suppression a réussi, -1 sinon
  */
-int RBTree_delete(RBTree tree, void * key);
+int RBTree_delete(RBTree tree,int key);
 
 /**
  * @brief Recherche une clé dans l'arbre rouge-noir donné
@@ -46,7 +46,7 @@ int RBTree_delete(RBTree tree, void * key);
  * @param key La clé à rechercher
  * @return 0 si la clé n'a pas été trouvée, 1 sinon
 */
-int RBTree_search(RBTree tree, void * key);
+int RBTree_search(RBTree tree,int key);
 
 /**
  * @brief Lit un arbre rouge-noir depuis un fichier
@@ -70,7 +70,7 @@ typedef enum
 
 // Définition d'un type pour un noeud de l'arbre rouge-noir
 typedef struct RBNode {
-	char key[1]; // Clé du noeud
+	int key; // Clé du noeud
 	struct RBNode *parent; // Pointeur vers le parent du noeud
 	struct RBNode *left, *right; // Pointeurs vers les enfants du noeud
 	RBColor color; // Couleur du noeud
@@ -100,7 +100,7 @@ static void RBNode_free_subtree(RBTree tree, RBNode node);
  * @param key La clé du noeud
  * @return Le noeud créé
  */
-static RBNode RBNode_new_node(RBTree tree, void * data);
+static RBNode RBNode_new_node(RBTree tree, int data);
 /**
  * @brief Détruit un noeud rouge-noir et le met dans la Node pool
 */
@@ -163,7 +163,7 @@ static void RBNode_post_order(RBTree tree, RBNode n);
  * @param needle La clé à rechercher
  * @return Le noeud trouvé
  */
-static RBNode RBNode_get_node_by_key(RBTree haystack, void * needle);
+static RBNode RBNode_get_node_by_key(RBTree haystack,int needle);
 
 /* Section 7: Fonctions diverses */
 /**
