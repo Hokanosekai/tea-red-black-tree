@@ -7,7 +7,7 @@
 #include <math.h>
 
 #define RANDOM_MAX 1000000
-#define FILENAME "../data/data_100k.csv"
+#define FILENAME "../data/rbtree/data_100k.csv"
 
 void testRBTree(RBTree tree, int *tab, int n, int number_of_run) {
 	double total_time = 0;
@@ -15,7 +15,6 @@ void testRBTree(RBTree tree, int *tab, int n, int number_of_run) {
 	double total_time_search = 0;
 	double total_time_delete = 0;
 	double total_time_insert = 0;
-
 
 	for(int i = 0; i < number_of_run; i++) {
 		printf("Run %d / %d\n", i + 1, number_of_run);
@@ -30,6 +29,7 @@ void testRBTree(RBTree tree, int *tab, int n, int number_of_run) {
 			RBTree_insert(tree, tab[j]);
 		}
 		clock_t end_insert = clock();
+	  printf("\tInsert done in %d ms\n", (int)(end_insert - start_insert));
 
 		// Mesure du temps d'exécution de l'algorithme de recherche
 		clock_t start_search = clock();
@@ -37,6 +37,7 @@ void testRBTree(RBTree tree, int *tab, int n, int number_of_run) {
 			RBTree_search(tree, tab[j]);
 		}
 		clock_t end_search = clock();
+		printf("\tSearch done in %d ms\n", (int)(end_search - start_search));
 
 		// Mesure du temps d'exécution de l'algorithme de suppression
 		clock_t start_delete = clock();
@@ -44,6 +45,7 @@ void testRBTree(RBTree tree, int *tab, int n, int number_of_run) {
 			RBTree_delete(tree, tab[j]);
 		}
 		clock_t end_delete = clock();
+		printf("\tDelete done in %d ms\n", (int)(end_delete - start_delete));
 
 		double temps_insert = (double)(end_insert - start_insert) / CLOCKS_PER_SEC;
 		temps_insert *= 1000;
