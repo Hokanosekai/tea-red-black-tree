@@ -2,14 +2,7 @@ library(ggplot2)
 library(dplyr)
 library(ggthemes)
 
-#data <- read.table("../data/data_10k_1M_6.csv", sep=";", header=TRUE)
-
-#mutate(typeTableau = factor(typeTableau, labels=c('aléatoire')))
-
-
 df <- read.csv(file = '../data/RData/data_10K_1M_int.csv',header=TRUE,sep=";")
-
-
 
 df %>%
   ggplot(aes(x=nodes, y=average_time, color=type)) +
@@ -17,12 +10,13 @@ df %>%
   labs(title = "Temps moyen cumulé",
   subtitle= ".",
   x = "Nombre de noeud",
-  y = "Temps moyen d'exécution",
+  y = "Temps exécution (ms)",
   color = "Données") +
+  theme(plot.title=element_text(hjust=0.5)) +
   theme_fivethirtyeight()+
   theme(axis.title = element_text())
   
-ggsave("temp_global.png")
+ggsave("Resultat/temp_global_int.png")
 
 df %>%
   ggplot(aes(x=nodes, y=average_time_insert, color=type)) +
@@ -30,13 +24,13 @@ df %>%
   labs(title = "Temps moyen d'insertion ",
   subtitle= "",
   x = "Nombre de noeud",
-  y = "Temps moyen d'exécution",
+  y = "Temps exécution (ms)",
   color = "Données") +
   theme_fivethirtyeight()+
   theme(axis.title = element_text())
 
   
-ggsave("temp_insertion.png")
+ggsave("Resultat/temp_insertion_int.png")
 
 
 
@@ -46,12 +40,12 @@ df %>%
   labs(title = "Temps moyen de recherche",
   subtitle= "",
   x = "Nombre de noeud",
-  y = "Temps moyen d'exécution",
+  y = "Temps exécution (ms)",
   color = "Données") +
   theme_fivethirtyeight() +
   theme(axis.title = element_text())
  
-ggsave("temp_recherche.png")
+ggsave("Resultat/temp_recherche_int.png")
 
 
 df %>%
@@ -60,12 +54,12 @@ df %>%
   labs(title = "Temps moyen de supression",
   subtitle= "",
   x = "Nombre de noeud",
-  y = "Temps moyen d'exécution",
+  y = "Temps exécution (ms)",
   color = "Données") +
   theme_fivethirtyeight() +
    theme(axis.title = element_text())
  
-ggsave("temp_supression.png")
+ggsave("Resultat/temp_supression_int.png")
 
 # Appliquer un thème au graphique en utilisant la fonction theme_bw()
 # ggplot(df, aes(x=n, y=average_time_insert)) +
