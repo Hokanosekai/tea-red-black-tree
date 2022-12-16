@@ -2,7 +2,6 @@ library(ggplot2)
 library(plyr)
 library(ggthemes)
 library(tidyverse)
-
 df <- read.table("../data/data_10k_1M_6.csv", sep=";", header=TRUE)
 average_time <- subset(df[5] )
 n <- subset(df[1] )
@@ -23,13 +22,7 @@ ggsave("tab_fusion2.png")
 # geom_smooth(size=1.5,alpha=0.8)+ geom_point()+ labs(title="Test insert : temps en fonction de taille",x="Taille",y="Temps", color = "Type tableau")+
 # theme_fivethirtyeight()+theme(axis.title=element_text())
 
-# ggsave("../images/tab_insert2.png")
-
-# ggplot(rapide, aes(x = taille, y = temps, color = typeTableau)) +
-# geom_smooth(size=1.5,alpha=0.8)+ geom_point()+ labs(title="Test rapide : temps en fonction de taille",x="Taille",y="Temps", color = "Type tableau")+
-# theme_fivethirtyeight()+theme(axis.title=element_text())
-
-# ggsave("../images/tab_rapide2.png")
+# ggsave("../images/tab_insert2.png") 
 
 # ggplot(bulle, aes(x = taille, y = temps, color = typeTableau)) +
 # geom_smooth(size=1.5,alpha=0.8)+ geom_point()+ labs(title="Test bulle : temps en fonction de taille",x="Taille",y="Temps", color = "Type tableau")+
