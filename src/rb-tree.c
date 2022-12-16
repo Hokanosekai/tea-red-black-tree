@@ -44,8 +44,7 @@ static void RBNode_free_subtree(RBTree tree, RBNode node) {
 	RBNode_free_node(node);
 }
 /* Création d'un noeud rouge. */
-static RBNode RBNode_new_node(RBTree tree, int data) {
-	//printf("TEST");
+static RBNode RBNode_new_node(RBTree tree, char *data) {
 	RBNode ret;
 	// On prend les noeuds du pool de mémoire si on peut; sinon on alloue
 	if (RBNode_mem_pool != NULL) {
@@ -59,7 +58,8 @@ static RBNode RBNode_new_node(RBTree tree, int data) {
 	}
 	//ret->key = data;
 	//printf("\tkey: %c", data);
-	ret->key = data;
+	//ret->key = data;
+	strcpy(ret->key, data);
 	ret->parent = tree->nil;
 	ret->left = tree->nil;
 	ret->right = tree->nil;
@@ -84,7 +84,7 @@ void RBTree_destroy() {
  * Section 2: Insertion
  *****************************************************************************/
 /* Insert un nouveau noeud dans l'arbre. */
-int RBTree_insert(RBTree tree, int key) {
+int RBTree_insert(RBTree tree, void *key) {
 	// Le noeud que nous allons créer
 	RBNode newnode = NULL;
 	// Le parent du noeud que nous allons créer
@@ -94,7 +94,7 @@ int RBTree_insert(RBTree tree, int key) {
 	// On cherche la position où insérer le noeud
 	while (pos != tree->nil) {
 		newparent = pos;
-		int cmp = key - pos->key;
+		int cmp = strcmp(key, pos->key);
 		if (cmp < 0) {
 			pos = pos->left;
 		} else if (cmp > 0) {
@@ -116,7 +116,7 @@ int RBTree_insert(RBTree tree, int key) {
 
 	// On affecte le parent au noeud
 	newnode->parent = newparent;
-	int cmp = key - newparent->key;
+	int cmp = strcmp(key, newparent->key);
 	if (newparent == tree->nil) {
 		tree->root = newnode;
 	} else if (cmp < 0) {
@@ -173,7 +173,7 @@ static RBNode RBNode_get_uncle(RBTree tree, RBNode n) {
  * Section 3: Suppression
  *****************************************************************************/
 /* Supprime un noeud de l'arbre. */
-int RBTree_delete(RBTree tree, int  key) {
+int RBTree_delete(RBTree tree, char * key) {
 	//printf("deleting key : %d\n", key);
 	// Le noeud que nous allons supprimer
 	RBNode dead = RBNode_get_node_by_key(tree, key);
@@ -310,7 +310,7 @@ static void RBNode_post_order(RBTree tree, RBNode n) {
  * Section 6: Recherche
  *****************************************************************************/
 /* Recherche un élément avec une clé particulière. */
-int RBTree_search(RBTree tree, int  key) {
+int RBTree_search(RBTree tree, char * key) {
 	RBNode n = RBNode_get_node_by_key(tree, key);
 	if (n == tree->nil) {
 		fprintf(stderr, "Error: node %i does not exist.\n", key);
@@ -320,10 +320,10 @@ int RBTree_search(RBTree tree, int  key) {
 	return 1;
 }
 /* Retourne un noeud avec la clé donnée. */
-static RBNode RBNode_get_node_by_key(RBTree haystack, int  needle) {
+static RBNode RBNode_get_node_by_key(RBTree haystack, char *needle) {
 	RBNode pos = haystack->root; /* our current position */
 	while (pos != haystack->nil) {
-		int cmp = needle - pos->key;
+		int cmp = strcmp(needle, pos->key);
 		if (cmp == 0) {
 			return pos;
 		} else if (cmp < 0) {

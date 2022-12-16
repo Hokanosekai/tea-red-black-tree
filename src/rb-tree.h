@@ -30,7 +30,7 @@ void RBTree_destroy();
  * @param key La clé à insérer
  * @return 0 si l'insertion a réussi, -1 sinon
  */
-int RBTree_insert(RBTree tree,int key);
+int RBTree_insert(RBTree tree, void *key);
 
 /**
  * @brief Supprime une clé de l'arbre rouge-noir donné
@@ -38,7 +38,7 @@ int RBTree_insert(RBTree tree,int key);
  * @param key La clé à supprimer
  * @return 0 si la suppression a réussi, -1 sinon
  */
-int RBTree_delete(RBTree tree,int key);
+int RBTree_delete(RBTree tree,char *key);
 
 /**
  * @brief Recherche une clé dans l'arbre rouge-noir donné
@@ -46,14 +46,14 @@ int RBTree_delete(RBTree tree,int key);
  * @param key La clé à rechercher
  * @return 0 si la clé n'a pas été trouvée, 1 sinon
 */
-int RBTree_search(RBTree tree,int key);
+int RBTree_search(RBTree tree,char *key);
 
 /**
  * @brief Lit un arbre rouge-noir depuis un fichier
  * @param fname Le nom du fichier à lire
  * @return Un pointeur vers l'arbre rouge-noir lu
  */
-RBTree RBTree_read(void * *fname);
+RBTree RBTree_read(void *fname);
 
 #endif /* RBTREE_H */
 
@@ -70,7 +70,7 @@ typedef enum
 
 // Définition d'un type pour un noeud de l'arbre rouge-noir
 typedef struct RBNode {
-	int key; // Clé du noeud
+	char key[10]; // Clé du noeud
 	struct RBNode *parent; // Pointeur vers le parent du noeud
 	struct RBNode *left, *right; // Pointeurs vers les enfants du noeud
 	RBColor color; // Couleur du noeud
@@ -100,7 +100,7 @@ static void RBNode_free_subtree(RBTree tree, RBNode node);
  * @param key La clé du noeud
  * @return Le noeud créé
  */
-static RBNode RBNode_new_node(RBTree tree, int data);
+static RBNode RBNode_new_node(RBTree tree, char *data);
 /**
  * @brief Détruit un noeud rouge-noir et le met dans la Node pool
 */
@@ -163,7 +163,7 @@ static void RBNode_post_order(RBTree tree, RBNode n);
  * @param needle La clé à rechercher
  * @return Le noeud trouvé
  */
-static RBNode RBNode_get_node_by_key(RBTree haystack,int needle);
+static RBNode RBNode_get_node_by_key(RBTree haystack,char *needle);
 
 /* Section 7: Fonctions diverses */
 /**

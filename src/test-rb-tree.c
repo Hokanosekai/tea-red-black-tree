@@ -25,6 +25,22 @@ void createFileWithRandomNumbers(int n, char *filename) {
 	fclose(file);
 }
 
+void createFileWithRandomChars(int n, char *filename) {
+	FILE *file = fopen(filename, "w");
+	if (file == NULL) {
+		printf("Error opening file!\n");
+		exit(1);
+	}
+
+	for (int i = 0; i < n; i++) {
+		fprintf(file, "%c%c%c%c%c%c%c%c%c%c", rand() % 26 + 'a',rand() % 26 + 'a',rand() % 26 + 'a',rand() % 26 + 'a',rand() % 26 + 'a', rand() % 26 + 'a',rand() % 26 + 'a',rand() % 26 + 'a',rand() % 26 + 'a',rand() % 26 + 'a');
+		if (i != n - 1) {
+			fprintf(file, ",");
+		}
+	}
+	fclose(file);
+}
+
 void createFileWithSortedNumbers(int n, char *filename) {
 	FILE *file = fopen(filename, "w");
 	if (file == NULL) {
@@ -38,6 +54,41 @@ void createFileWithSortedNumbers(int n, char *filename) {
 			fprintf(file, ",");
 		}
 	}
+	fclose(file);
+}
+
+int compare_strings(const void* a, const void* b) {
+    // Convert the pointers to char* and dereference them
+    const char* s1 = *(const char**)a;
+    const char* s2 = *(const char**)b;
+    // Compare the strings using strcmp
+    return strcmp(s1, s2);
+}
+
+void createFileWithSortedChars(int n, char *filename) {
+	FILE *file = fopen(filename, "w");
+	if (file == NULL) {
+		printf("Error opening file!\n");
+		exit(1);
+	}
+
+	char **tab = malloc(sizeof(char) * 10 * n);
+
+	for (int i = 0; i < n; i++) {
+		char *str = malloc(sizeof(char) * 10);
+		sprintf(str, "%c%c%c%c%c%c%c%c%c%c", rand() % 26 + 'a',rand() % 26 + 'a',rand() % 26 + 'a',rand() % 26 + 'a',rand() % 26 + 'a', rand() % 26 + 'a',rand() % 26 + 'a',rand() % 26 + 'a',rand() % 26 + 'a',rand() % 26 + 'a');
+		tab[i] = str;
+	}
+
+	qsort(tab, sizeof(tab) / sizeof(char*), sizeof(char*), compare_strings);
+
+	for (int i = 0; i < n; i++) {
+		fprintf(file, "%s", tab[i]);
+		if (i != n - 1) {
+			fprintf(file, ",");
+		}
+	}
+
 	fclose(file);
 }
 
@@ -62,7 +113,29 @@ void readDataFromFile(char *filename, int *tab, int n) {
 	fclose(file);
 }
 
-void testRBTree(RBTree tree, int *tab, int n, int number_of_run) {
+void readCharDataFromFile(char *filename, char **tab, int n) {
+	FILE *file = fopen(filename, "r");
+	if (file == NULL) {
+		printf("Error opening file!\n");
+		exit(1);
+	}
+
+	char *line = NULL;
+	size_t len = 0;
+	size_t read;
+
+	while ((read = getline(&line, &len, file)) != -1) {
+		char *token = strtok(line, ",");
+		for (int i = 0; i < n; i++) {
+			printf("%s\n", token);
+			tab[i] = token;
+			token = strtok(NULL, ",");
+		}
+	}
+	fclose(file);
+}
+
+void testRBTree(RBTree tree, char **tab, int n, int number_of_run) {
 	double total_time = 0;
 
 	double total_time_search = 0;
@@ -74,12 +147,17 @@ void testRBTree(RBTree tree, int *tab, int n, int number_of_run) {
 		if (tree != NULL) {
 			RBTree_free(tree);
 		}
+		//RBTree_destroy();
 		tree = RBTree_create();
+
 
 		// Mesure du temps d'exécution de l'algorithme d'insertion
 		clock_t start_insert = clock();
 		for (int j = 0; j < n; j++) {
-			RBTree_insert(tree, tab[j]);
+			char *str = malloc(sizeof(char) * (strlen(tab[j]) + 1));
+			strcpy(str, tab[j]);
+			//printf("\tInserting %s elements\n", str);
+			RBTree_insert(tree, str);
 		}
 		clock_t end_insert = clock();
 
@@ -91,7 +169,9 @@ void testRBTree(RBTree tree, int *tab, int n, int number_of_run) {
 		// Mesure du temps d'exécution de l'algorithme de recherche
 		clock_t start_search = clock();
 		for (int j = 0; j < n; j++) {
-			RBTree_search(tree, tab[j]);
+			char *str = malloc(sizeof(char) * (strlen(tab[j]) + 1));
+			strcpy(str, tab[j]);
+			RBTree_search(tree, str);
 		}
 		clock_t end_search = clock();
 
@@ -103,7 +183,9 @@ void testRBTree(RBTree tree, int *tab, int n, int number_of_run) {
 		// Mesure du temps d'exécution de l'algorithme de suppression
 		clock_t start_delete = clock();
 		for (int j = 0; j < n; j++) {
-			RBTree_delete(tree, tab[j]);
+			char *str = malloc(sizeof(char) * (strlen(tab[j]) + 1));
+			strcpy(str, tab[j]);
+			RBTree_delete(tree, str);
 		}
 		clock_t end_delete = clock();
 
@@ -148,12 +230,12 @@ int main(int argc, char *argv[]) {
 	long int number_of_node;
 	long int iterations;
 
-	int *tab;
+	char **tab;
 
 	if (argc >= 3 && argc <= 4) {
 
 		number_of_node = strtol(argv[1], &endptr1, 10);
-		tab = malloc(sizeof(int) * number_of_node);
+		tab = malloc(sizeof(char) * 10 * number_of_node);
 
 		if (strcmp(argv[2], "--create-random") == 0) {
 			char filename[100];
@@ -167,18 +249,32 @@ int main(int argc, char *argv[]) {
 			createFileWithSortedNumbers(number_of_node, filename);
 			printf("File %s created\n", filename);
 			exit(0);
+		} else if (strcmp(argv[2], "--create-random-char") == 0) {
+			char filename[100];
+			sprintf(filename, "data_%d_%d_sorted.txt", number_of_node, RANDOM_MAX);
+			createFileWithRandomChars(number_of_node, filename);
+			printf("File %s created\n", filename);
+			exit(0);
+		} else if (strcmp(argv[2], "--create-sorted-char") == 0) {
+			char filename[100];
+			sprintf(filename, "data_%d_%d_sorted.txt", number_of_node, RANDOM_MAX);
+			createFileWithSortedChars(number_of_node, filename);
+			printf("File %s created\n", filename);
+			exit(0);
 		} else {
 			iterations = strtol(argv[2], &endptr2, 10);
 
 			if (argc == 4) {
-				readDataFromFile(argv[3], tab, number_of_node);
+				readCharDataFromFile(argv[3], tab, number_of_node);
 				printf("size of tab : %d\n", sizeof(tab));
 				printf("Data read from file %s\n", argv[3]);
 			} else {
 				for (int i = 0; i < number_of_node; i++) {
-					tab[i] = rand() % RANDOM_MAX;
+					char *str = malloc(sizeof(char) * 10);
+					sprintf(str, "%c%c%c%c%c%c%c%c%c%c", rand() % 26 + 'a',rand() % 26 + 'a',rand() % 26 + 'a',rand() % 26 + 'a',rand() % 26 + 'a', rand() % 26 + 'a',rand() % 26 + 'a',rand() % 26 + 'a',rand() % 26 + 'a',rand() % 26 + 'a');
+					tab[i] = str;
+					//tab[i] = rand() % 26 + rand() % 26 + rand() % 26 + rand() % 26 + rand() % 26 + rand() % 26 + rand() % 26;
 				}
-				printf("size of tab : %d\n", sizeof(tab));
 				printf("Data generated randomly\n");
 			}
 
@@ -189,6 +285,7 @@ int main(int argc, char *argv[]) {
 				fprintf(f, "nodes;RANDOM_MAX;iterations;total_time;average_time;average_time_insert;average_time_search;average_time_delete;total_time_insert;total_time_search;total_time_delete;Olog(n)\n");
 				fclose(f);
 			} else {
+				printf("File %s already exists, we don't write the header again\n", FILENAME);
 				fclose(f);
 			}
 
