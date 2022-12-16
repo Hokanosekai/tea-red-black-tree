@@ -15,11 +15,12 @@ df %>%
   ggplot(aes(x=nodes, y=average_time, color=type)) +
   geom_line()+
   labs(title = "Temps moyen cumulé",
-  subtitle= "",
+  subtitle= ".",
   x = "Nombre de noeud",
   y = "Temps moyen d'exécution",
   color = "Données") +
-  theme_fivethirtyeight()
+  theme_fivethirtyeight()+
+  theme(axis.title = element_text())
   
 ggsave("temp_global.png")
 
@@ -31,7 +32,9 @@ df %>%
   x = "Nombre de noeud",
   y = "Temps moyen d'exécution",
   color = "Données") +
-  theme_fivethirtyeight()
+  theme_fivethirtyeight()+
+  theme(axis.title = element_text())
+
   
 ggsave("temp_insertion.png")
 
@@ -45,8 +48,9 @@ df %>%
   x = "Nombre de noeud",
   y = "Temps moyen d'exécution",
   color = "Données") +
-  theme_fivethirtyeight()
-  
+  theme_fivethirtyeight() +
+  theme(axis.title = element_text())
+ 
 ggsave("temp_recherche.png")
 
 
@@ -58,8 +62,9 @@ df %>%
   x = "Nombre de noeud",
   y = "Temps moyen d'exécution",
   color = "Données") +
-  theme_fivethirtyeight()
-  
+  theme_fivethirtyeight() +
+   theme(axis.title = element_text())
+ 
 ggsave("temp_supression.png")
 
 # Appliquer un thème au graphique en utilisant la fonction theme_bw()
